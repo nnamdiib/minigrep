@@ -1,3 +1,7 @@
+//! # Minigrep
+//!
+//! `minigrep` searches files for patterns.
+//!
 use std::error::Error;
 use std::{env, fs};
 
@@ -18,28 +22,28 @@ pub fn run(config: Config) -> Result<(), Box<dyn Error>> {
 }
 
 fn search<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
-    let mut result: Vec<&str> = Vec::new();
-
-    for line in contents.lines() {
-        if line.contains(query) {
-            result.push(line);
-        }
-    }
-
-    result
+    contents
+        .lines()
+        .filter(|line| line.contains(query))
+        .collect()
 }
-
+/// Searches the given content string case-insentively.
+///
+/// # Examples
+///
+/// ```
+/// let query = "boy";
+/// let content = "a BOY\nline two";
+///
+/// assert_eq!(minigrep::search_case_insensitive(query, content), vec!["a BOY"]);
+/// ```
 pub fn search_case_insensitive<'a>(query: &str, contents: &'a str) -> Vec<&'a str> {
     let query = query.to_lowercase();
-    let mut results = Vec::new();
 
-    for line in contents.lines() {
-        if line.to_lowercase().contains(&query) {
-            results.push(line);
-        }
-    }
-
-    results
+    contents
+        .lines()
+        .filter(|line| line.to_lowercase().contains(&query))
+        .collect()
 }
 
 pub struct Config<'a> {
